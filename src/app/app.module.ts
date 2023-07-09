@@ -8,16 +8,22 @@ const config: SocketIoConfig = { url: environment.wsUrl, options: {} };
 
 import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
+import { FooterComponent } from './components/footer/footer.component';
+import { ChatComponent } from './components/chat/chat.component';
+import { FormsModule } from '@angular/forms';
 
 
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FooterComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     SocketIoModule.forRoot(config)
   ],
   providers: [],
