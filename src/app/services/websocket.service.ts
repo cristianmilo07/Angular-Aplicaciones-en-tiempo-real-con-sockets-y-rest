@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+import { Usuario } from '../classes/usuario';
 //import * as io from 'socket.io-client';
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,14 @@ export class WebsocketService {
  
   public socketStatus=false;
   private socket:any;
+  //public usuario: Usuario;
  
   constructor() {
     this.socket = io(environment.wsUrl);
     this.checkStatus();
    }
  
+   // Metodo para revisar estado del servidor
    checkStatus(){
     this.socket.on('connect', () => {
       console.log('Conectado al servidor');
@@ -27,8 +30,8 @@ export class WebsocketService {
       this.socketStatus=false;
     });
   }
-
-  // Para emitir || emit('EVENTO, payload?, callback?)
+  
+  // Para emitir o emisiones de algún tipo de eventos q quiero decir al sevidor q estoy disparando|| emit('EVENTO, payload?, callback?)
   emit( evento: string, payload?: any, callback?:Function ) {
 
     console.log('Emitiendo', evento)
@@ -45,6 +48,15 @@ export class WebsocketService {
         Subscriber.next(data)
       })
     })
+  }
+
+
+  loginWs(nombre: string){
+    console.log("configurando")
+    this.socket.emit('Configurar-usuario', {nombre}, ( resp: any )=> {
+      console.log(resp)
+    })
+
   }
 
 

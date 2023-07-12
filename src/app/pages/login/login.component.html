@@ -1,0 +1,22 @@
+<h1>
+   Login 
+</h1>
+<div class="row justy-content-center">
+    <div class="col-9">
+        <form class="p-4" (ngSubmit)="ingresar()">
+            <input type="nombre"
+            [(ngModel)]="nombre"
+            class="form-control chat-input"
+            name="nombre"
+            placeholder="Mensaje..."
+            autofocus
+            autocomplete="off">
+
+            <button 
+                class="btn btn-primary margin-top-10">
+                Ingresar
+            </button>
+        </form>
+    </div>
+</div>
+    
