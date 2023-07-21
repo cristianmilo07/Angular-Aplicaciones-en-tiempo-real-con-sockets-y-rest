@@ -10,12 +10,14 @@ import { Usuario } from '../classes/usuario';
 export class WebsocketService {
  
   public socketStatus=false;
-  private socket:any;
-  //public usuario: Usuario;
+  private socket:any
+  public usuario!: Usuario;
  
-  constructor() {
+  constructor(  ) {
     this.socket = io(environment.wsUrl);
+    this.cargarStorage();
     this.checkStatus();
+
    }
  
    // Metodo para revisar estado del servidor
@@ -52,13 +54,32 @@ export class WebsocketService {
 
 
   loginWs(nombre: string){
-    console.log("configurando")
-    this.socket.emit('Configurar-usuario', {nombre}, ( resp: any )=> {
-      console.log(resp)
-    })
 
+    return new Promise<void>(( resolve, reject) => {
+        console.log("configurando")
+        this.socket.emit('Configurar-usuario', {nombre}, ( resp: any )=> {
+        console.log("a",resp)
+
+        this.usuario = new Usuario(nombre);
+        this.guardarStorage();
+        resolve();
+      });
+    });
   }
 
+  getUsuario(){
+    return this.usuario;
+  }
 
- 
+  guardarStorage(){
+    localStorage.setItem('usuario', JSON.stringify(this.usuario));
+  }
+
+  cargarStorage(){
+    if ( localStorage.getItem('usuario')) {
+      this.usuario = JSON.parse(localStorage.getItem('usuario') || '{}' );
+      this.loginWs(this.usuario.nombre);
+    }
+    return this.usuario;
+  }
 }
