@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { Usuario } from '../classes/usuario';
+import { Router } from '@angular/router';
 //import * as io from 'socket.io-client';
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,9 @@ export class WebsocketService {
   private socket:any
   public usuario!: Usuario;
  
-  constructor(  ) {
+  constructor( 
+    private router: Router
+   ) {
     this.socket = io(environment.wsUrl);
     this.cargarStorage();
     this.checkStatus();
@@ -25,6 +28,7 @@ export class WebsocketService {
     this.socket.on('connect', () => {
       console.log('Conectado al servidor');
       this.socketStatus=true;
+      this.cargarStorage();
     });
  
     this.socket.on('disconnect', () => {
@@ -47,6 +51,7 @@ export class WebsocketService {
   listen (evento: string) {
     return new Observable((Subscriber) => {
       this.socket.on(evento, (data: unknown) => {
+        console.log('data',data)
         Subscriber.next(data)
       })
     })
@@ -65,6 +70,17 @@ export class WebsocketService {
         resolve();
       });
     });
+  }
+
+  logoutWS() {
+    this.usuario = null!;
+    localStorage.removeItem('usuario');
+
+    const payload = {
+      nombre: 'sin-nombre'
+    };
+    this.emit('Configurar-usuario', payload, ()=>{})
+    this.router.navigateByUrl('');
   }
 
   getUsuario(){
